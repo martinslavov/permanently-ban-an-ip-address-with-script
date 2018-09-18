@@ -1,0 +1,51 @@
+:local id
+:local list
+:local address
+
+:foreach j in=[/ip firewall address-list find ] do={
+	:if ( [/ip firewall address-list get $j dynamic] = true) do={
+                       
+		:set address [/ip firewall address-list get $j address ] 
+		:set list [/ip firewall address-list get $j list] 
+		:local id [$j]
+		
+		//Set list to Winbox
+		:if ( $list = "Winbox Stage 1") do={
+			:set list "Winbox Black List Autoban"	
+		}
+		:if ( $list = "Winbox Stage 2") do={
+			:set list "Winbox Black List Autoban"
+		}
+		:if ( $list = "Winbox Stage 3") do={
+			:set list "Winbox Black List Autoban"
+		}
+		:if ( $list = "Winbox Black List") do={
+			:set list "Winbox Black List Autoban"
+		}
+		
+		//Set list to SSH
+		:if ( $list = "ssh_stage1") do={
+			:set list "ssh_blacklist_autoban"
+		}
+		:if ( $list = "ssh_stage2") do={
+			:set list "ssh_blacklist_autoban"
+		}
+		:if ( $list = "ssh_stage3") do={
+			:set list "ssh_blacklist_autoban"
+		}
+		:if ( $list = "ssh_blacklist") do={
+			:set list "ssh_blacklist_autoban"
+		}
+		
+		//Set list to Port Scanner
+		:if ( $list = "port scanners") do={
+			:set list "port scanners autoban"
+		}
+
+		/ip firewall address-list remove numbers=$id
+		/ip firewall address-list add address=$address list=$list
+
+		/log info  $j;
+		/log info ( "Permanently ban an IP $address at list $list with id $id" ) ;
+	}
+}
